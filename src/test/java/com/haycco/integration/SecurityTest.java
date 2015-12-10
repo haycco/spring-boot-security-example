@@ -102,7 +102,7 @@ public class SecurityTest {
 
     @Test
     public void metricsEndpoint_withCorrectBackendAdminCredentials_returnsOk() {
-        String username = "backend_admin";
+        String username = "haycco_admin";
         String password = "remember_to_change_me_by_external_property_on_deploy";
         given().header(X_AUTH_USERNAME, username).header(X_AUTH_PASSWORD, password).
                 when().get("/metrics").

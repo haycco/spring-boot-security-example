@@ -86,16 +86,16 @@ public class ManagementEndpointAuthenticationFilter extends GenericFilterBean {
     }
 
     private Authentication tryToAuthenticateWithUsernameAndPassword(Optional<String> username, Optional<String> password) {
-        BackendAdminUsernamePasswordAuthenticationToken requestAuthentication = new BackendAdminUsernamePasswordAuthenticationToken(username, password);
+        HayccoAdminUsernamePasswordAuthenticationToken requestAuthentication = new HayccoAdminUsernamePasswordAuthenticationToken(username, password);
         return tryToAuthenticate(requestAuthentication);
     }
 
     private Authentication tryToAuthenticate(Authentication requestAuthentication) {
         Authentication responseAuthentication = authenticationManager.authenticate(requestAuthentication);
         if (responseAuthentication == null || !responseAuthentication.isAuthenticated()) {
-            throw new InternalAuthenticationServiceException("Unable to authenticate Backend Admin for provided credentials");
+            throw new InternalAuthenticationServiceException("Unable to authenticate Haycco Admin for provided credentials");
         }
-        logger.debug("Backend Admin successfully authenticated");
+        logger.debug("Haycco Admin successfully authenticated");
         return responseAuthentication;
     }
 }
