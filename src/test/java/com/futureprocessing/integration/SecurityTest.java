@@ -1,10 +1,10 @@
-package com.futureprocessing.integration;
+package com.haycco.integration;
 
-import com.futureprocessing.spring.Application;
-import com.futureprocessing.spring.api.ApiController;
-import com.futureprocessing.spring.api.samplestuff.ServiceGateway;
-import com.futureprocessing.spring.infrastructure.AuthenticatedExternalWebService;
-import com.futureprocessing.spring.infrastructure.security.ExternalServiceAuthenticator;
+import com.haycco.spring.Application;
+import com.haycco.spring.api.ApiController;
+import com.haycco.spring.api.samplestuff.ServiceGateway;
+import com.haycco.spring.infrastructure.AuthenticatedExternalWebService;
+import com.haycco.spring.infrastructure.security.ExternalServiceAuthenticator;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.ValidatableResponse;
 import org.junit.Before;
