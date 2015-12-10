@@ -9,15 +9,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.AuthorityUtils;
 
-public class BackendAdminUsernamePasswordAuthenticationProvider implements AuthenticationProvider {
+public class HayccoAdminUsernamePasswordAuthenticationProvider implements AuthenticationProvider {
 
-    public static final String INVALID_BACKEND_ADMIN_CREDENTIALS = "Invalid Backend Admin Credentials";
+    public static final String INVALID_HAYCCO_ADMIN_CREDENTIALS = "Invalid Haycco Admin Credentials";
 
-    @Value("${backend.admin.username}")
-    private String backendAdminUsername;
+    @Value("${haycco.admin.username}")
+    private String hayccoAdminUsername;
 
-    @Value("${backend.admin.password}")
-    private String backendAdminPassword;
+    @Value("${haycco.admin.password}")
+    private String hayccoAdminPassword;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -25,11 +25,11 @@ public class BackendAdminUsernamePasswordAuthenticationProvider implements Authe
         Optional<String> password = (Optional) authentication.getCredentials();
 
         if (credentialsMissing(username, password) || credentialsInvalid(username, password)) {
-            throw new BadCredentialsException(INVALID_BACKEND_ADMIN_CREDENTIALS);
+            throw new BadCredentialsException(INVALID_HAYCCO_ADMIN_CREDENTIALS);
         }
 
         return new UsernamePasswordAuthenticationToken(username.get(), null,
-                AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_BACKEND_ADMIN"));
+                AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_HAYCCO_ADMIN"));
     }
 
     private boolean credentialsMissing(Optional<String> username, Optional<String> password) {
@@ -37,15 +37,15 @@ public class BackendAdminUsernamePasswordAuthenticationProvider implements Authe
     }
 
     private boolean credentialsInvalid(Optional<String> username, Optional<String> password) {
-        return !isBackendAdmin(username.get()) || !password.get().equals(backendAdminPassword);
+        return !isHayccoAdmin(username.get()) || !password.get().equals(hayccoAdminPassword);
     }
 
-    private boolean isBackendAdmin(String username) {
-        return backendAdminUsername.equals(username);
+    private boolean isHayccoAdmin(String username) {
+        return hayccoAdminUsername.equals(username);
     }
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return authentication.equals(BackendAdminUsernamePasswordAuthenticationToken.class);
+        return authentication.equals(HayccoAdminUsernamePasswordAuthenticationToken.class);
     }
 }
