@@ -11,3 +11,8 @@ Requirements
 ============================
 * [Java Platform (JDK) 7](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 * [Apache Maven 3.x](http://maven.apache.org/)
+
+Quick start
+============================
+1. `mvn spring-boot:run`
+3. Point your browser to [https://localhost:8443/](https://localhost:8443/)

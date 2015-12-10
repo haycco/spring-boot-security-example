@@ -7,6 +7,7 @@ public abstract class ApiController {
     public static final String STUFF_URL = API_PATH + "/stuff";
 
     // Spring Boot Actuator services
+    public static final String HEALTH_ENDPOINT = "/health";
     public static final String AUTOCONFIG_ENDPOINT = "/autoconfig";
     public static final String BEANS_ENDPOINT = "/beans";
     public static final String CONFIGPROPS_ENDPOINT = "/configprops";

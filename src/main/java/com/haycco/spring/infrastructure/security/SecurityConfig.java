@@ -2,8 +2,9 @@ package com.haycco.spring.infrastructure.security;
 
 import java.io.IOException;
 
-import com.haycco.spring.api.ApiController;
-import com.haycco.spring.infrastructure.externalwebservice.SomeExternalServiceAuthenticator;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -14,18 +15,15 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.haycco.spring.api.ApiController;
+import com.haycco.spring.infrastructure.externalwebservice.SomeExternalServiceAuthenticator;
 
 @Configuration
-@EnableWebMvcSecurity
 @EnableScheduling
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -35,32 +33,34 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.
-                csrf().disable().
-                sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).
-                and().
-                authorizeRequests().
-                antMatchers(actuatorEndpoints()).hasRole(hayccoAdminRole).
-                anyRequest().authenticated().
-                and().
-                anonymous().disable().
-                exceptionHandling().authenticationEntryPoint(unauthorizedEntryPoint());
+        http
+            .csrf().disable()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .authorizeRequests()
+            .antMatchers(actuatorEndpoints()).hasRole(hayccoAdminRole)
+            .anyRequest().authenticated()
+            .and()
+            .anonymous().disable()
+            .exceptionHandling()
+            .authenticationEntryPoint(unauthorizedEntryPoint());
 
-        http.addFilterBefore(new AuthenticationFilter(authenticationManager()), BasicAuthenticationFilter.class).
-                addFilterBefore(new ManagementEndpointAuthenticationFilter(authenticationManager()), BasicAuthenticationFilter.class);
+        http
+            .addFilterBefore(new AuthenticationFilter(authenticationManager()), BasicAuthenticationFilter.class)
+            .addFilterBefore(new ManagementEndpointAuthenticationFilter(authenticationManager()), BasicAuthenticationFilter.class);
     }
 
     private String[] actuatorEndpoints() {
-        return new String[]{ApiController.AUTOCONFIG_ENDPOINT, ApiController.BEANS_ENDPOINT, ApiController.CONFIGPROPS_ENDPOINT,
-                ApiController.ENV_ENDPOINT, ApiController.MAPPINGS_ENDPOINT,
-                ApiController.METRICS_ENDPOINT, ApiController.SHUTDOWN_ENDPOINT};
+        return new String[] { ApiController.AUTOCONFIG_ENDPOINT, ApiController.BEANS_ENDPOINT,
+                ApiController.CONFIGPROPS_ENDPOINT, ApiController.ENV_ENDPOINT, ApiController.MAPPINGS_ENDPOINT,
+                ApiController.METRICS_ENDPOINT, ApiController.SHUTDOWN_ENDPOINT };
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(domainUsernamePasswordAuthenticationProvider()).
-                authenticationProvider(hayccoAdminUsernamePasswordAuthenticationProvider()).
-                authenticationProvider(tokenAuthenticationProvider());
+        auth.authenticationProvider(domainUsernamePasswordAuthenticationProvider())
+                .authenticationProvider(hayccoAdminUsernamePasswordAuthenticationProvider())
+                .authenticationProvider(tokenAuthenticationProvider());
     }
 
     @Bean
@@ -92,7 +92,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationEntryPoint unauthorizedEntryPoint() {
         return new AuthenticationEntryPoint() {
             @Override
-            public void commence(HttpServletRequest request, HttpServletResponse response, 
+            public void commence(HttpServletRequest request, HttpServletResponse response,
                     AuthenticationException authException) throws IOException, ServletException {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             }

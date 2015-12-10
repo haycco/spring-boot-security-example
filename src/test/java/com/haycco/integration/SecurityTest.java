@@ -45,10 +45,10 @@ public class SecurityTest {
     @Value("${local.server.port}")
     int port;
 
-    @Value("${keystore.file}")
+    @Value("${server.ssl.key-store}")
     String keystoreFile;
 
-    @Value("${keystore.pass}")
+    @Value("${server.ssl.key-store-password}")
     String keystorePass;
 
     @Autowired
@@ -86,13 +86,13 @@ public class SecurityTest {
     }
 
     @Test
-    public void metricsEndpoint_withoutBackendAdminCredentials_returnsUnauthorized() {
+    public void metricsEndpoint_withoutHayccoAdminCredentials_returnsUnauthorized() {
         when().get("/metrics").
                 then().statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
     @Test
-    public void metricsEndpoint_withInvalidBackendAdminCredentials_returnsUnauthorized() {
+    public void metricsEndpoint_withInvalidHayccoAdminCredentials_returnsUnauthorized() {
         String username = "test_user_2";
         String password = "InvalidPassword";
         given().header(X_AUTH_USERNAME, username).header(X_AUTH_PASSWORD, password).
@@ -101,7 +101,7 @@ public class SecurityTest {
     }
 
     @Test
-    public void metricsEndpoint_withCorrectBackendAdminCredentials_returnsOk() {
+    public void metricsEndpoint_withCorrectHayccoAdminCredentials_returnsOk() {
         String username = "haycco_admin";
         String password = "remember_to_change_me_by_external_property_on_deploy";
         given().header(X_AUTH_USERNAME, username).header(X_AUTH_PASSWORD, password).
