@@ -1,7 +1,7 @@
 spring-boot-security-example
 ============================
 
-Copied from other place. I have changed gradle to pom and updated spring-boot version for 1.3.0.
+Copied from other place. I have changed gradle to pom and updated spring-boot version for 1.3.0.RELEASE
 
 This project demonstrates usage of Spring-Boot with Spring-Security using Java configuration with Integration Tests
 
@@ -14,5 +14,6 @@ Requirements
 
 Quick start
 ============================
-1. `mvn spring-boot:run`
+1. `mvn clean install`
+2. `mvn spring-boot:run`
 3. Point your browser to [https://localhost:8443/](https://localhost:8443/)
