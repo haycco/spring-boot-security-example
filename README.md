@@ -1,7 +1,7 @@
 spring-boot-security-example
 ============================
 
-Copied from other place. I have changed gradle to pom and updated spring-boot version for 1.3.0.RELEASE
+Copied from other place. I have changed gradle to pom and updated spring-boot version for 1.3.3.RELEASE
 
 This project demonstrates usage of Spring-Boot with Spring-Security using Java configuration with Integration Tests
 
