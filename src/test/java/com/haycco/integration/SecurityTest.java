@@ -1,10 +1,5 @@
 package com.haycco.integration;
 
-import com.haycco.spring.Application;
-import com.haycco.spring.api.ApiController;
-import com.haycco.spring.api.samplestuff.ServiceGateway;
-import com.haycco.spring.infrastructure.AuthenticatedExternalWebService;
-import com.haycco.spring.infrastructure.security.ExternalServiceAuthenticator;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.ValidatableResponse;
 import org.junit.Before;
@@ -31,6 +26,12 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+
+import org.haycco.spring.Application;
+import org.haycco.spring.api.ApiController;
+import org.haycco.spring.api.samplestuff.ServiceGateway;
+import org.haycco.spring.infrastructure.AuthenticatedExternalWebService;
+import org.haycco.spring.infrastructure.security.ExternalServiceAuthenticator;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {Application.class, SecurityTest.SecurityTestConfig.class})
