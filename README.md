@@ -1,4 +1,4 @@
-spring-boot-security-example
+spring-boot-security-example  [![Build Status](https://travis-ci.org/haycco/spring-boot-security-example.svg?branch=master)](https://travis-ci.org/haycco/spring-boot-security-example)
 ============================
 
 Copied from other place. I have changed gradle to pom and updated spring-boot version for 1.3.3.RELEASE
