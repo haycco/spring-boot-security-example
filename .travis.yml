@@ -1,5 +1,1 @@
 language: java
-    jdk:
-      - "1.7"
-    before_script:
-      - npm install --global gulp
