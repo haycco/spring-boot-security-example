@@ -15,6 +15,7 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
         this.tokenService = tokenService;
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         Optional<String> token = (Optional) authentication.getPrincipal();

@@ -8,6 +8,8 @@ import java.util.Collection;
 
 public class AuthenticatedExternalWebService extends AuthenticationWithToken {
 
+    private static final long serialVersionUID = 8680788064444054038L;
+    
     private ExternalWebServiceStub externalWebService;
 
     public AuthenticatedExternalWebService(Object aPrincipal, Object aCredentials, Collection<? extends GrantedAuthority> anAuthorities) {

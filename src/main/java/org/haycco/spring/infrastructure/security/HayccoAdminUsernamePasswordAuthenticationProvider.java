@@ -19,6 +19,7 @@ public class HayccoAdminUsernamePasswordAuthenticationProvider implements Authen
     @Value("${haycco.admin.password}")
     private String hayccoAdminPassword;
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         Optional<String> username = (Optional) authentication.getPrincipal();

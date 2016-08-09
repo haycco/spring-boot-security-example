@@ -17,6 +17,7 @@ public class DomainUsernamePasswordAuthenticationProvider implements Authenticat
         this.externalServiceAuthenticator = externalServiceAuthenticator;
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         Optional<String> username = (Optional) authentication.getPrincipal();
