@@ -1,11 +1,11 @@
 package org.haycco.spring.infrastructure.security;
 
-import com.google.common.base.Optional;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.util.StringUtils;
 
 public class DomainUsernamePasswordAuthenticationProvider implements AuthenticationProvider {
 
@@ -17,17 +17,16 @@ public class DomainUsernamePasswordAuthenticationProvider implements Authenticat
         this.externalServiceAuthenticator = externalServiceAuthenticator;
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        Optional<String> username = (Optional) authentication.getPrincipal();
-        Optional<String> password = (Optional) authentication.getCredentials();
+        String username = String.valueOf(authentication.getPrincipal());
+        String password = String.valueOf(authentication.getCredentials());
 
-        if (!username.isPresent() || !password.isPresent()) {
+        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
             throw new BadCredentialsException("Invalid Domain User Credentials");
         }
 
-        AuthenticationWithToken resultOfAuthentication = externalServiceAuthenticator.authenticate(username.get(), password.get());
+        AuthenticationWithToken resultOfAuthentication = externalServiceAuthenticator.authenticate(username, password);
         String newToken = tokenService.generateNewToken();
         resultOfAuthentication.setToken(newToken);
         tokenService.store(newToken, resultOfAuthentication);

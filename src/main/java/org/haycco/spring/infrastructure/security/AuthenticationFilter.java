@@ -1,8 +1,13 @@
 package org.haycco.spring.infrastructure.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Optional;
-import com.google.common.base.Strings;
+import java.io.IOException;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.haycco.spring.api.ApiController;
 import org.slf4j.Logger;
@@ -16,16 +21,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 import org.springframework.web.util.UrlPathHelper;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class AuthenticationFilter extends GenericFilterBean {
 
@@ -43,9 +43,9 @@ public class AuthenticationFilter extends GenericFilterBean {
         HttpServletRequest httpRequest = asHttp(request);
         HttpServletResponse httpResponse = asHttp(response);
 
-        Optional<String> username = Optional.fromNullable(httpRequest.getHeader("X-Auth-Username"));
-        Optional<String> password = Optional.fromNullable(httpRequest.getHeader("X-Auth-Password"));
-        Optional<String> token = Optional.fromNullable(httpRequest.getHeader("X-Auth-Token"));
+        String username = (httpRequest.getHeader("X-Auth-Username")==null) ? "" : httpRequest.getHeader("X-Auth-Username");
+        String password = (httpRequest.getHeader("X-Auth-Password")==null) ? "" : httpRequest.getHeader("X-Auth-Password");
+        String token = (httpRequest.getHeader("X-Auth-Token")==null) ? "" : httpRequest.getHeader("X-Auth-Token");
 
         String resourcePath = new UrlPathHelper().getPathWithinApplication(httpRequest);
 
@@ -56,7 +56,7 @@ public class AuthenticationFilter extends GenericFilterBean {
                 return;
             }
 
-            if (token.isPresent()) {
+            if (!StringUtils.isEmpty(token)) {
                 logger.debug("Trying to authenticate user by X-Auth-Token method. Token: {}", token);
                 processTokenAuthentication(token);
             }
@@ -80,14 +80,14 @@ public class AuthenticationFilter extends GenericFilterBean {
     private void addSessionContextToLogging() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String tokenValue = "EMPTY";
-        if (authentication != null && !Strings.isNullOrEmpty(authentication.getDetails().toString())) {
+        if (authentication != null && !StringUtils.isEmpty(authentication.getDetails().toString())) {
             MessageDigestPasswordEncoder encoder = new MessageDigestPasswordEncoder("SHA-1");
             tokenValue = encoder.encodePassword(authentication.getDetails().toString(), "not_so_random_salt");
         }
         MDC.put(TOKEN_SESSION_KEY, tokenValue);
 
         String userValue = "EMPTY";
-        if (authentication != null && !Strings.isNullOrEmpty(authentication.getPrincipal().toString())) {
+        if (authentication != null && !StringUtils.isEmpty(authentication.getPrincipal().toString())) {
             userValue = authentication.getPrincipal().toString();
         }
         MDC.put(USER_SESSION_KEY, userValue);
@@ -105,7 +105,7 @@ public class AuthenticationFilter extends GenericFilterBean {
         return ApiController.AUTHENTICATE_URL.equalsIgnoreCase(resourcePath) && httpRequest.getMethod().equals("POST");
     }
 
-    private void processUsernamePasswordAuthentication(HttpServletResponse httpResponse, Optional<String> username, Optional<String> password) throws IOException {
+    private void processUsernamePasswordAuthentication(HttpServletResponse httpResponse, String username, String password) throws IOException {
         Authentication resultOfAuthentication = tryToAuthenticateWithUsernameAndPassword(username, password);
         SecurityContextHolder.getContext().setAuthentication(resultOfAuthentication);
         httpResponse.setStatus(HttpServletResponse.SC_OK);
@@ -115,17 +115,17 @@ public class AuthenticationFilter extends GenericFilterBean {
         httpResponse.getWriter().print(tokenJsonResponse);
     }
 
-    private Authentication tryToAuthenticateWithUsernameAndPassword(Optional<String> username, Optional<String> password) {
+    private Authentication tryToAuthenticateWithUsernameAndPassword(String username, String password) {
         UsernamePasswordAuthenticationToken requestAuthentication = new UsernamePasswordAuthenticationToken(username, password);
         return tryToAuthenticate(requestAuthentication);
     }
 
-    private void processTokenAuthentication(Optional<String> token) {
+    private void processTokenAuthentication(String token) {
         Authentication resultOfAuthentication = tryToAuthenticateWithToken(token);
         SecurityContextHolder.getContext().setAuthentication(resultOfAuthentication);
     }
 
-    private Authentication tryToAuthenticateWithToken(Optional<String> token) {
+    private Authentication tryToAuthenticateWithToken(String token) {
         PreAuthenticatedAuthenticationToken requestAuthentication = new PreAuthenticatedAuthenticationToken(token, null);
         return tryToAuthenticate(requestAuthentication);
     }

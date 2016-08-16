@@ -1,6 +1,5 @@
 package org.haycco.spring.infrastructure.security;
 
-import com.google.common.base.Optional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -8,6 +7,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.util.StringUtils;
 
 public class HayccoAdminUsernamePasswordAuthenticationProvider implements AuthenticationProvider {
 
@@ -19,26 +19,25 @@ public class HayccoAdminUsernamePasswordAuthenticationProvider implements Authen
     @Value("${haycco.admin.password}")
     private String hayccoAdminPassword;
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        Optional<String> username = (Optional) authentication.getPrincipal();
-        Optional<String> password = (Optional) authentication.getCredentials();
+        String username = String.valueOf(authentication.getPrincipal());
+        String password = String.valueOf(authentication.getCredentials());
 
         if (credentialsMissing(username, password) || credentialsInvalid(username, password)) {
             throw new BadCredentialsException(INVALID_HAYCCO_ADMIN_CREDENTIALS);
         }
 
-        return new UsernamePasswordAuthenticationToken(username.get(), null,
+        return new UsernamePasswordAuthenticationToken(username, null,
                 AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_HAYCCO_ADMIN"));
     }
 
-    private boolean credentialsMissing(Optional<String> username, Optional<String> password) {
-        return !username.isPresent() || !password.isPresent();
+    private boolean credentialsMissing(String username, String password) {
+        return StringUtils.isEmpty(username) || StringUtils.isEmpty(password);
     }
 
-    private boolean credentialsInvalid(Optional<String> username, Optional<String> password) {
-        return !isHayccoAdmin(username.get()) || !password.get().equals(hayccoAdminPassword);
+    private boolean credentialsInvalid(String username, String password) {
+        return !isHayccoAdmin(username) || !password.equals(hayccoAdminPassword);
     }
 
     private boolean isHayccoAdmin(String username) {

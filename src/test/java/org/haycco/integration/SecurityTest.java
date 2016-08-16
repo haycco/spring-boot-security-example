@@ -1,42 +1,35 @@
-package com.haycco.integration;
-
-import com.jayway.restassured.RestAssured;
-import com.jayway.restassured.response.ValidatableResponse;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.BDDMockito;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.IntegrationTest;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
+package org.haycco.integration;
 
 import static com.jayway.restassured.RestAssured.given;
 import static com.jayway.restassured.RestAssured.when;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
 
 import org.haycco.spring.Application;
 import org.haycco.spring.api.ApiController;
 import org.haycco.spring.api.samplestuff.ServiceGateway;
 import org.haycco.spring.infrastructure.AuthenticatedExternalWebService;
 import org.haycco.spring.infrastructure.security.ExternalServiceAuthenticator;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.BDDMockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.jayway.restassured.RestAssured;
+import com.jayway.restassured.response.ValidatableResponse;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {Application.class, SecurityTest.SecurityTestConfig.class})
-@WebAppConfiguration
-@IntegrationTest("server.port:0")
+@SpringBootTest(classes = { Application.class }, webEnvironment=WebEnvironment.DEFINED_PORT)
 public class SecurityTest {
 
     private static final String X_AUTH_USERNAME = "X-Auth-Username";
@@ -52,32 +45,23 @@ public class SecurityTest {
     @Value("${server.ssl.key-store-password}")
     String keystorePass;
 
+    @MockBean
+    ExternalServiceAuthenticator someExternalServiceAuthenticator;
+    
+    @MockBean
+    ServiceGateway serviceGateway;
+
     @Autowired
     ExternalServiceAuthenticator mockedExternalServiceAuthenticator;
 
     @Autowired
     ServiceGateway mockedServiceGateway;
 
-    @Configuration
-    public static class SecurityTestConfig {
-        @Bean
-        public ExternalServiceAuthenticator someExternalServiceAuthenticator() {
-            return mock(ExternalServiceAuthenticator.class);
-        }
-
-        @Bean
-        @Primary
-        public ServiceGateway serviceGateway() {
-            return mock(ServiceGateway.class);
-        }
-    }
-
     @Before
     public void setup() {
         RestAssured.baseURI = "https://localhost";
         RestAssured.keystore(keystoreFile, keystorePass);
         RestAssured.port = port;
-        Mockito.reset(mockedExternalServiceAuthenticator, mockedServiceGateway);
     }
 
     @Test

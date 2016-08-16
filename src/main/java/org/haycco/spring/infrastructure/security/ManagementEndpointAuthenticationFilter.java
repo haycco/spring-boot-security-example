@@ -22,8 +22,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
 import org.springframework.web.util.UrlPathHelper;
 
-import com.google.common.base.Optional;
-
 public class ManagementEndpointAuthenticationFilter extends GenericFilterBean {
 
     private final static Logger logger = LoggerFactory.getLogger(ManagementEndpointAuthenticationFilter.class);
@@ -51,8 +49,8 @@ public class ManagementEndpointAuthenticationFilter extends GenericFilterBean {
         HttpServletRequest httpRequest = asHttp(request);
         HttpServletResponse httpResponse = asHttp(response);
 
-        Optional<String> username = Optional.fromNullable(httpRequest.getHeader("X-Auth-Username"));
-        Optional<String> password = Optional.fromNullable(httpRequest.getHeader("X-Auth-Password"));
+        String username = (httpRequest.getHeader("X-Auth-Username")==null) ? "" : (String)httpRequest.getHeader("X-Auth-Username");
+        String password = (httpRequest.getHeader("X-Auth-Password")==null) ? "" : (String)httpRequest.getHeader("X-Auth-Password");
 
         String resourcePath = new UrlPathHelper().getPathWithinApplication(httpRequest);
 
@@ -82,12 +80,12 @@ public class ManagementEndpointAuthenticationFilter extends GenericFilterBean {
         return managementEndpoints.contains(resourcePath);
     }
 
-    private void processManagementEndpointUsernamePasswordAuthentication(Optional<String> username, Optional<String> password) throws IOException {
+    private void processManagementEndpointUsernamePasswordAuthentication(String username, String password) throws IOException {
         Authentication resultOfAuthentication = tryToAuthenticateWithUsernameAndPassword(username, password);
         SecurityContextHolder.getContext().setAuthentication(resultOfAuthentication);
     }
 
-    private Authentication tryToAuthenticateWithUsernameAndPassword(Optional<String> username, Optional<String> password) {
+    private Authentication tryToAuthenticateWithUsernameAndPassword(String username, String password) {
         HayccoAdminUsernamePasswordAuthenticationToken requestAuthentication = new HayccoAdminUsernamePasswordAuthenticationToken(username, password);
         return tryToAuthenticate(requestAuthentication);
     }
