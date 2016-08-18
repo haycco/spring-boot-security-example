@@ -17,3 +17,7 @@ Quick start
 1. `mvn clean install`
 2. `mvn spring-boot:run`
 3. Point your browser to [https://localhost:8443/health](https://localhost:8443/health)
+
+Welcome join us social group
+============================
+QQ Group: 313752626
