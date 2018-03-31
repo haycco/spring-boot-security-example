@@ -65,14 +65,17 @@ public class SecurityTest {
     }
 
     @Test
-    public void healthEndpoint_isAvailableToEveryone() {
-        when().get("/health").
+    public void healthEndpointt_withoutHayccoAdminCredentials_isAvailable() {        
+        String username = "haycco_admin";
+        String password = "remember_to_change_me_by_external_property_on_deploy";
+        given().header(X_AUTH_USERNAME, username).header(X_AUTH_PASSWORD, password).
+                when().get("/actuator/health").
                 then().statusCode(HttpStatus.OK.value()).body("status", equalTo("UP"));
     }
 
     @Test
     public void metricsEndpoint_withoutHayccoAdminCredentials_returnsUnauthorized() {
-        when().get("/metrics").
+        when().get("/actuator/metrics").
                 then().statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
@@ -81,7 +84,7 @@ public class SecurityTest {
         String username = "test_user_2";
         String password = "InvalidPassword";
         given().header(X_AUTH_USERNAME, username).header(X_AUTH_PASSWORD, password).
-                when().get("/metrics").
+                when().get("/actuator/metrics").
                 then().statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
@@ -90,7 +93,7 @@ public class SecurityTest {
         String username = "haycco_admin";
         String password = "remember_to_change_me_by_external_property_on_deploy";
         given().header(X_AUTH_USERNAME, username).header(X_AUTH_PASSWORD, password).
-                when().get("/metrics").
+                when().get("/actuator/metrics").
                 then().statusCode(HttpStatus.OK.value());
     }
 

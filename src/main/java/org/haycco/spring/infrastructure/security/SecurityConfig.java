@@ -36,9 +36,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .csrf().disable()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
-            .authorizeRequests()
-            .antMatchers(actuatorEndpoints()).hasRole(hayccoAdminRole)
-            .anyRequest().authenticated()
+                .authorizeRequests()
+                .antMatchers(actuatorEndpoints()).hasRole(hayccoAdminRole)
+                .anyRequest().authenticated()
             .and()
             .anonymous().disable()
             .exceptionHandling()
@@ -50,9 +50,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     private String[] actuatorEndpoints() {
-        return new String[] { ApiController.AUTOCONFIG_ENDPOINT, ApiController.BEANS_ENDPOINT,
-                ApiController.CONFIGPROPS_ENDPOINT, ApiController.ENV_ENDPOINT, ApiController.MAPPINGS_ENDPOINT,
-                ApiController.METRICS_ENDPOINT, ApiController.SHUTDOWN_ENDPOINT };
+        return new String[] {ApiController.INFO_ENDPOINT, ApiController.DOCS_ENDPOINT, ApiController.CONDITIONS_ENDPOINT, 
+                ApiController.BEANS_ENDPOINT, ApiController.CONFIGPROPS_ENDPOINT, ApiController.ENV_ENDPOINT, 
+                ApiController.MAPPINGS_ENDPOINT, ApiController.METRICS_ENDPOINT, ApiController.SHUTDOWN_ENDPOINT };
     }
 
     @Override

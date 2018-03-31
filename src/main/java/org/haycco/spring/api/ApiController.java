@@ -7,12 +7,14 @@ public abstract class ApiController {
     public static final String STUFF_URL = API_PATH + "/stuff";
 
     // Spring Boot Actuator services
-    public static final String HEALTH_ENDPOINT = "/health";
-    public static final String AUTOCONFIG_ENDPOINT = "/autoconfig";
-    public static final String BEANS_ENDPOINT = "/beans";
-    public static final String CONFIGPROPS_ENDPOINT = "/configprops";
-    public static final String ENV_ENDPOINT = "/env";
-    public static final String MAPPINGS_ENDPOINT = "/mappings";
-    public static final String METRICS_ENDPOINT = "/metrics";
-    public static final String SHUTDOWN_ENDPOINT = "/shutdown";
+    public static final String HEALTH_ENDPOINT = "/actuator/health";
+    public static final String INFO_ENDPOINT = "/actuator/info";
+    public static final String DOCS_ENDPOINT = "/actuator/docs";
+    public static final String CONDITIONS_ENDPOINT = "/actuator/conditions";
+    public static final String BEANS_ENDPOINT = "/actuator/beans";
+    public static final String CONFIGPROPS_ENDPOINT = "/actuator/configprops";
+    public static final String ENV_ENDPOINT = "/actuator/env";
+    public static final String MAPPINGS_ENDPOINT = "/actuator/mappings";
+    public static final String METRICS_ENDPOINT = "/actuator/metrics";
+    public static final String SHUTDOWN_ENDPOINT = "/actuator/shutdown";
 }

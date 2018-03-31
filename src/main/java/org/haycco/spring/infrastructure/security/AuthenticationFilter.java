@@ -16,10 +16,11 @@ import org.slf4j.MDC;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.encoding.MessageDigestPasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
@@ -81,8 +82,10 @@ public class AuthenticationFilter extends GenericFilterBean {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String tokenValue = "EMPTY";
         if (authentication != null && !StringUtils.isEmpty(authentication.getDetails().toString())) {
-            MessageDigestPasswordEncoder encoder = new MessageDigestPasswordEncoder("SHA-1");
-            tokenValue = encoder.encodePassword(authentication.getDetails().toString(), "not_so_random_salt");
+//            MessageDigestPasswordEncoder encoder = new MessageDigestPasswordEncoder("SHA-1");
+            PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+//            tokenValue = encoder.encodePassword(authentication.getDetails().toString(), "not_so_random_salt");
+            tokenValue = passwordEncoder.encode(authentication.getDetails().toString());
         }
         MDC.put(TOKEN_SESSION_KEY, tokenValue);
 
