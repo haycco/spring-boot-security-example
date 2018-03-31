@@ -63,6 +63,12 @@ public class SecurityTest {
         RestAssured.keystore(keystoreFile, keystorePass);
         RestAssured.port = port;
     }
+    
+    @Test
+    public void healthEndpoint_withoutHayccoAdminCredentials_returnsUnauthorized() {
+        when().get("/actuator/health").
+               then().statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
 
     @Test
     public void healthEndpointt_withoutHayccoAdminCredentials_isAvailable() {        
